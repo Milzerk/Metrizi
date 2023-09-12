@@ -1,0 +1,91 @@
+version: "3.7"
+services:
+
+  ## PHP-FPM Container ############
+  php-fpm:
+    build:
+      context: ./
+      dockerfile: ./docker/php-fpm/Dockerfile.prod
+    image: php-fpm-prod
+    container_name: template-php-fpm
+    restart: unless-stopped
+    working_dir: /var/www/html
+    expose:
+      - 8000
+    volumes:
+      - template-share:/var/www/html
+    networks:
+      - template-network
+    depends_on:
+      - mysql
+      - redis
+
+  ## NGINX Container #############
+  nginx:
+    image: nginx:1.19-alpine
+    container_name: template-nginx
+    restart: unless-stopped
+    ports:
+      - 80:80
+    volumes:
+      - template-share:/var/www/html
+      - ./docker/nginx:/etc/nginx/conf.d
+    networks:
+      - template-network
+    depends_on:
+      - php-fpm
+
+  # MySQL Container
+  mysql:
+    image: mysql:8.0
+    container_name: template-mysql
+    volumes:
+      - template-db:/var/lib/mysql
+    expose:
+      - 3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+      - MYSQL_DATABASE=${DB_DATABASE}
+      - MYSQL_USER=${DB_USERNAME}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+    networks:
+      - template-network
+
+  # Redis
+  redis:
+    image: redis:6.2
+    container_name: template-redis
+    command: redis-server --appendonly yes --requirepass "${REDIS_PASSWORD}"
+    volumes:
+      - template-redis:/data
+    ports:
+      - 6379:6379
+    networks:
+      - template-network
+
+  #MeiliSearch
+  meilisearch:
+    image: getmeili/meilisearch
+    container_name: template-meilisearch
+    volumes:
+      - template-meilisearch:/data.ms
+    environment:
+      - MEILI_MASTER_KEY=${MEILISEARCH_KEY}
+    expose:
+      - 7700
+    networks: 
+      - template-network
+
+networks:
+  template-network:
+    driver: bridge
+
+volumes:
+  template-db:
+    driver: local
+  template-redis:
+    driver: local
+  template-share:
+    driver: local
+  template-meilisearch:
+    driver: local
