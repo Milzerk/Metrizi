@@ -11,7 +11,7 @@ Metrizi é um facilitador de contagem de pontos de função, onde poderá rastre
 ### Contagem
 - Iniciar uma sessão de contagem em um [Projeto](#Projeto)
 - Listar Contagens realizadas de um [Projeto](#projeto)
-- Detalhar uma Contagem listando as funções de [dados](<#Função de Dados>)/[transação](<#Função de Transação>)
+- Detalhar uma Contagem listando as funções de [dados](#Função-de-Dados)/[transação](#Função-de-Transação)
 - Descartar Contagem
 - Finalizar Contagem
 	- Ao finalizar contagem, vincular todos as funções de dados/transação ao [Projeto](#Projeto)
