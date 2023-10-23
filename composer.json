@@ -1,0 +1,10 @@
+{
+    "name": "miller/metrizi",
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/",
+            "Domain\\": "domain/"
+        }
+    },
+    "require": {}
+}
