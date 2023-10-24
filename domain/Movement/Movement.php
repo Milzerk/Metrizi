@@ -2,38 +2,43 @@
 
 namespace Domain\Movement;
 
-use Domain\Movement\Exceptions\MovementException;
-use Domain\Movement\States\MovementStateContext;
 use Domain\Patrimony\Patrimony;
 
 class Movement
 {
     private int $id;
     private array $MovementItems = [];
-    private MovementStateContext $status;
+    private MovementState $state;
 
-    public function __construct() {
-        $this->status = new MovementStateContext;
-        echo $this->status->getLabel() . '<br>';
+    public function __construct()
+    {
+        $this->changeState(MovementState::DRAFT);
     }
 
     public function addPatrimony(Patrimony $patrimony): void
     {
-        if (!$this->status->inDraft()) {
-            throw new MovementException('Não é possível adicionar patrimônio a uma movimentação já iniciada');
-        }
-
-        $this->MovementItems[] = $patrimony->startMovement(new MovementItem);
+        $this->state->allowAdditem();
+        $this->MovementItems[] = $patrimony->newMovementItem(new MovementItem);
     }
 
     public function startMovement(): void
     {
-        $this->status->startMovement();
-
+        $this->changeState($this->state->startMovement());
     }
 
     public function approve(): void
     {
-        $this->status->approve();
+        $this->changeState($this->state->approve());
+    }
+
+    public function reject(): void
+    {
+        $this->changeState($this->state->reject());
+    }
+
+    private function changeState(MovementState $state)
+    {
+        $this->state = $state;
+        echo $this->state->getLabel() . "<br>";
     }
 }
