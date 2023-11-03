@@ -1,15 +1,16 @@
 <?php
 
 namespace Domain\Movement;
-use Domain\Patrimony\Patrimony;
+
+use Domain\Movement\Contracts\PatrimonyInterface;
 
 class MovementItem
 {
     private int $id;
-    private int $patrimonyId;
+    private PatrimonyInterface $patrimony;
 
-    public function setPatrimonyId(int $id): void
+    public function __construct(PatrimonyInterface $patrimony)
     {
-        $this->id = $id;
+        $this->patrimony = $patrimony;
     }
 }

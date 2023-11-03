@@ -2,7 +2,7 @@
 
 namespace Domain\Movement;
 
-use Domain\Patrimony\Patrimony;
+use Domain\Movement\Contracts\PatrimonyInterface;
 
 class Movement
 {
@@ -15,10 +15,11 @@ class Movement
         $this->changeState(MovementState::DRAFT);
     }
 
-    public function addPatrimony(Patrimony $patrimony): void
+    public function addPatrimony(PatrimonyInterface $patrimony): void
     {
         $this->state->allowAdditem();
-        $this->MovementItems[] = $patrimony->newMovementItem(new MovementItem);
+
+        $this->MovementItems[] = new MovementItem($patrimony);
     }
 
     public function startMovement(): void
