@@ -2,11 +2,13 @@
 
 namespace Domain\Movement;
 
-use Domain\Movement\Contracts\PatrimonyInterface;
+use Domain\Movement\Contracts\MovementItemInterface;
 
 class Movement
 {
     private int $id;
+
+    /** @var array<MovementItemInterface> */
     private array $MovementItems = [];
     private MovementState $state;
 
@@ -15,11 +17,11 @@ class Movement
         $this->changeState(MovementState::DRAFT);
     }
 
-    public function addPatrimony(PatrimonyInterface $patrimony): void
+    public function addItem(MovementItemInterface $movementItem): void
     {
         $this->state->allowAdditem();
 
-        $this->MovementItems[] = new MovementItem($patrimony);
+        $this->MovementItems[] = $movementItem;
     }
 
     public function startMovement(): void

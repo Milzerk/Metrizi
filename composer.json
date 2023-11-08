@@ -6,5 +6,7 @@
             "Domain\\": "domain/"
         }
     },
-    "require": {}
+    "require": {
+        "psr/http-message": "^2.0"
+    }
 }
