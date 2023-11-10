@@ -1,0 +1,92 @@
+version: "3.8"
+
+networks:
+  metrizi-network:
+    driver: bridge
+
+# volumes:
+#   metrizi-db:
+#     driver: local
+#   metrizi-redis:
+#     driver: local
+#   metrizi-meilisearch:
+#     driver: local
+
+services:
+
+  ## PHP-FPM Container ############
+  php-fpm:
+    build:
+      context: ./
+      dockerfile: ./docker/php-fpm/Dockerfile
+    image: php-fpm
+    container_name: metrizi-php-fpm
+    working_dir: /var/www/html
+    volumes:
+      - ./:/var/www/html
+    networks:
+      - metrizi-network
+
+  ## NGINX Container #############
+  nginx:
+    image: nginx:1.19-alpine
+    container_name: metrizi-nginx
+    ports:
+      - 80:80
+    volumes:
+      - ./:/var/www/html
+      - ./docker/nginx:/etc/nginx/conf.d
+    networks:
+      - metrizi-network
+      
+  # # MySQL Container
+  # mysql:
+  #   image: mysql:8.0
+  #   container_name: metrizi-mysql
+  #   volumes:
+  #     - metrizi-db:/var/lib/mysql
+  #   ports:
+  #     - "3306:3306"
+  #   environment:
+  #     - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+  #     - MYSQL_DATABASE=${DB_DATABASE}
+  #     - MYSQL_USER=${DB_USERNAME}
+  #     - MYSQL_PASSWORD=${DB_PASSWORD}
+  #   networks:
+  #     - metrizi-network
+
+  # # Redis
+  # redis:
+  #   image: redis:6.2
+  #   container_name: metrizi-redis
+  #   command: redis-server --appendonly yes --requirepass "${REDIS_PASSWORD}"
+  #   volumes:
+  #     - metrizi-redis:/data
+  #   ports:
+  #     - "6379:6379"
+  #   networks:
+  #     - metrizi-network
+
+  # # Mailhog
+  # mailhog: 
+  #   image: mailhog/mailhog:v1.0.1
+  #   container_name: metrizi-mailhog
+  #   ports:
+  #     - "1025:1025"
+  #     - "8025:8025"
+  #   networks:
+  #     - metrizi-network 
+
+  # #MeiliSearch
+  # meilisearch:
+  #   image: getmeili/meilisearch
+  #   container_name: metrizi-meilisearch
+  #   volumes:
+  #     - metrizi-meilisearch:/data.ms
+  #   environment:
+  #     - MEILI_MASTER_KEY=${MEILISEARCH_KEY}
+  #   ports:
+  #     - "7700:7700"
+  #   networks: 
+  #     - metrizi-network
+      

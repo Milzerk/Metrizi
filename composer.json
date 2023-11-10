@@ -5,8 +5,5 @@
             "App\\": "src/",
             "Domain\\": "domain/"
         }
-    },
-    "require": {
-        "psr/http-message": "^2.0"
     }
 }
